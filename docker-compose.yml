@@ -2,12 +2,14 @@ version: '3.8'
 
 services:
   postgres:
+    env_file:
+      - .env
     image: postgres:15-alpine
     container_name: sprinthub-postgres
     environment:
       POSTGRES_DB: sprinthub_db
       POSTGRES_USER: sprinthub_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongpassword}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -17,12 +19,14 @@ services:
     restart: unless-stopped
 
   mongodb:
+    env_file:
+      - .env
     image: mongo:6.0-focal
     container_name: sprinthub-mongodb
     environment:
       MONGO_INITDB_DATABASE: sprinthub_events
       MONGO_INITDB_ROOT_USERNAME: sprinthub_admin
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-strongpassword}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
     volumes:
       - mongodb_data:/data/db
     ports:
@@ -32,9 +36,11 @@ services:
     restart: unless-stopped
 
   redis:
+    env_file:
+      - .env
     image: redis:7.0-alpine
     container_name: sprinthub-redis
-    command: redis-server --requirepass ${REDIS_PASSWORD:-strongpassword}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis_data:/data
     ports:
