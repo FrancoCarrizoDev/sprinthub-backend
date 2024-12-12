@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: sprinthub-postgres
+    environment:
+      POSTGRES_DB: sprinthub_db
+      POSTGRES_USER: sprinthub_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-strongpassword}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - sprinthub_network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:6.0-focal
+    container_name: sprinthub-mongodb
+    environment:
+      MONGO_INITDB_DATABASE: sprinthub_events
+      MONGO_INITDB_ROOT_USERNAME: sprinthub_admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD:-strongpassword}
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - sprinthub_network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: sprinthub-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-strongpassword}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - sprinthub_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  mongodb_data:
+  redis_data:
+
+networks:
+  sprinthub_network:
+    driver: bridge
