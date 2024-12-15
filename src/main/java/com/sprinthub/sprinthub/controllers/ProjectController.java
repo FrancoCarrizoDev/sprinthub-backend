@@ -1,5 +1,6 @@
 package com.sprinthub.sprinthub.controllers;
 
+import com.sprinthub.sprinthub.dtos.ProjectDTO;
 import com.sprinthub.sprinthub.models.ProjectJPA;
 import com.sprinthub.sprinthub.services.ProjectService;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectJPA>> getAllProjectsByUser(@RequestHeader("userId") UUID userId) {
+    public ResponseEntity<List<ProjectDTO>> getAllProjectsByUser(@RequestHeader("userId") UUID userId) {
         return ResponseEntity.ok(projectService.getAllProjectsByUser(userId));
     }
 

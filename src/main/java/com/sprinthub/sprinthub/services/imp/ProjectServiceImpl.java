@@ -1,5 +1,7 @@
 package com.sprinthub.sprinthub.services.imp;
 
+import com.sprinthub.sprinthub.dtos.ProjectDTO;
+import com.sprinthub.sprinthub.dtos.ProjectMapper;
 import com.sprinthub.sprinthub.models.ProjectJPA;
 import com.sprinthub.sprinthub.models.UserJPA;
 import com.sprinthub.sprinthub.repositories.ProjectRepository;
@@ -14,11 +16,13 @@ import java.util.UUID;
 public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectRepository projectRepository;
-    private final UserRepository userRepository; // Asegurarnos de que el usuario existe
+    private final UserRepository userRepository;
+    private final ProjectMapper projectMapper;
 
-    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository) {
+    public ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository, ProjectMapper projectMapper) {
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.projectMapper = projectMapper;
     }
 
     @Override
@@ -38,8 +42,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public List<ProjectJPA> getAllProjectsByUser(UUID userId) {
-        return projectRepository.findByUserId(userId);
+    public List<ProjectDTO> getAllProjectsByUser(UUID userId) {
+        List<ProjectJPA> projects = projectRepository.findByUserId(userId);
+        return projects.stream()
+                .map(projectMapper::toDTO)
+                .toList();
     }
 
     @Override
