@@ -1,6 +1,8 @@
 package com.sprinthub.sprinthub.controllers;
 
+import com.sprinthub.sprinthub.dtos.CreateProjectDTO;
 import com.sprinthub.sprinthub.dtos.ProjectDTO;
+import com.sprinthub.sprinthub.dtos.UpdateProjectDTO;
 import com.sprinthub.sprinthub.models.ProjectJPA;
 import com.sprinthub.sprinthub.services.ProjectService;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,12 @@ public class ProjectController {
     }
 
     @PostMapping
-    public ResponseEntity<ProjectJPA> createProject(@RequestHeader("userId") Long userId, @RequestBody ProjectJPA project) {
+    public ResponseEntity<ProjectDTO> createProject(@RequestHeader("userId") UUID userId, @RequestBody CreateProjectDTO project) {
         return ResponseEntity.ok(projectService.createProject(userId, project));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProjectJPA> getProjectById(@RequestHeader("userId") Long userId, @PathVariable Long id) {
+    public ResponseEntity<ProjectDTO> getProjectById(@RequestHeader("userId") UUID userId, @PathVariable UUID id) {
         return ResponseEntity.ok(projectService.getProjectById(id, userId));
     }
 
@@ -35,12 +37,12 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProjectJPA> updateProject(@RequestHeader("userId") Long userId, @PathVariable Long id, @RequestBody ProjectJPA project) {
+    public ResponseEntity<ProjectDTO> updateProject(@RequestHeader("userId") UUID userId, @PathVariable UUID id, @RequestBody UpdateProjectDTO project) {
         return ResponseEntity.ok(projectService.updateProject(id, userId, project));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProject(@RequestHeader("userId") Long userId, @PathVariable Long id) {
+    public ResponseEntity<?> deleteProject(@RequestHeader("userId") UUID userId, @PathVariable UUID id) {
         projectService.deleteProject(id, userId);
         return ResponseEntity.noContent().build();
     }

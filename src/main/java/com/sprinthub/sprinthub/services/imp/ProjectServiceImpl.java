@@ -1,7 +1,9 @@
 package com.sprinthub.sprinthub.services.imp;
 
+import com.sprinthub.sprinthub.dtos.CreateProjectDTO;
 import com.sprinthub.sprinthub.dtos.ProjectDTO;
 import com.sprinthub.sprinthub.dtos.ProjectMapper;
+import com.sprinthub.sprinthub.dtos.UpdateProjectDTO;
 import com.sprinthub.sprinthub.models.ProjectJPA;
 import com.sprinthub.sprinthub.models.UserJPA;
 import com.sprinthub.sprinthub.repositories.ProjectRepository;
@@ -26,20 +28,24 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectJPA createProject(Long userId, ProjectJPA project) {
+    public ProjectDTO createProject(UUID userId, CreateProjectDTO project) {
         UserJPA user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
-
-        project.setUser(user);
-        return projectRepository.save(project);
+        ProjectJPA projectJPA = projectMapper.fromCreateDTO(project);
+        projectJPA.setUser(user);
+        projectRepository.save(projectJPA);
+        return projectMapper.toDTO(projectJPA);
     }
 
     @Override
-    public ProjectJPA getProjectById(Long projectId, Long userId) {
-        return projectRepository.findById(projectId)
+    public ProjectDTO getProjectById(UUID projectId, UUID userId) {
+        ProjectJPA projectJPA = projectRepository.findById(projectId)
                 .filter(project -> project.getUser().getId().equals(userId))
                 .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado o no autorizado"));
+
+        return projectMapper.toDTO(projectJPA);
     }
+
 
     @Override
     public List<ProjectDTO> getAllProjectsByUser(UUID userId) {
@@ -50,16 +56,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectJPA updateProject(Long projectId, Long userId, ProjectJPA updatedProject) {
-        ProjectJPA project = getProjectById(projectId, userId);
-        project.setName(updatedProject.getName());
-        project.setDescription(updatedProject.getDescription());
-        return projectRepository.save(project);
+    public ProjectDTO updateProject(UUID projectId, UUID userId, UpdateProjectDTO updatedProject) {
+        ProjectJPA projectJPA = projectRepository.findById(projectId)
+                .filter(project -> project.getUser().getId().equals(userId))
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado o no autorizado"));
+        projectMapper.fromUpdateDTO(updatedProject, projectJPA);
+        return projectMapper.toDTO(projectJPA);
     }
 
     @Override
-    public void deleteProject(Long projectId, Long userId) {
-        ProjectJPA project = getProjectById(projectId, userId);
+    public void deleteProject(UUID projectId, UUID userId) {
+        ProjectJPA project = projectRepository.findById(projectId)
+                .filter(p -> p.getUser().getId().equals(userId))
+                .orElseThrow(() -> new IllegalArgumentException("Proyecto no encontrado o no autorizado"));
         projectRepository.delete(project);
     }
 }
