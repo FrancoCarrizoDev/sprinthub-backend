@@ -1,20 +1,24 @@
 package com.sprinthub.sprinthub.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "user_auth")
+@Getter
+@Setter
 public class UserAuthJPA {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(optional = false) // Cambiado de ManyToOne a OneToOne
+    @JoinColumn(name = "user_id", nullable = false, unique = true) // unique=true garantiza unicidad en la base de datos
     private UserJPA user;
 
     @Column(name = "auth_provider", nullable = false)
@@ -23,17 +27,11 @@ public class UserAuthJPA {
     @Column(name = "password_hash")
     private String passwordHash;
 
-    @Column(name = "google_id")
-    private String googleId;
+    @Column(name = "external_id")
+    private String externalId;
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
-
-    @Column(name = "is_admin", nullable = false)
-    private Boolean isAdmin = false;
-
-    @Column(nullable = false)
-    private String role;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();

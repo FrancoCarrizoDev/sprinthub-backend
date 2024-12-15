@@ -8,32 +8,33 @@ package com.sprinthub.sprinthub.models;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class UserJPA {
 
     @Id
     @GeneratedValue
     private UUID id;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private UserAuthJPA auth;
+
     @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private String name;
+    private String firstName;
 
-    @Column(unique = true)
-    private String username;
-
-    @Column(name = "avatar_url")
-    private String avatarUrl;
+    @Column(nullable = true)
+    private String lastName;
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;

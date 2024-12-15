@@ -20,8 +20,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Nueva API para deshabilitar CSRF
                 .authorizeHttpRequests(auth -> auth
+                        // Permitir acceso público a Swagger y OpenAPI
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                        // Permitir acceso a rutas públicas
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/api/test/public").permitAll()
+                        .requestMatchers("/api/auth/register").permitAll()
+                        // Cualquier otra solicitud requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
