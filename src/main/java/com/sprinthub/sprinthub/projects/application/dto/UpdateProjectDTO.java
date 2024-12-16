@@ -1,11 +1,11 @@
-package com.sprinthub.sprinthub.dtos;
+package com.sprinthub.sprinthub.projects.application.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateProjectDTO {
+public class UpdateProjectDTO {
     private String name;
     private String description;
 }

@@ -3,15 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package com.sprinthub.sprinthub.models;
+package com.sprinthub.sprinthub.domain.models;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity

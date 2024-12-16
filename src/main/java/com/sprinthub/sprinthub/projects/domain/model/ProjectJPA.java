@@ -1,5 +1,6 @@
-package com.sprinthub.sprinthub.models;
+package com.sprinthub.sprinthub.projects.domain.model;
 
+import com.sprinthub.sprinthub.domain.models.UserJPA;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

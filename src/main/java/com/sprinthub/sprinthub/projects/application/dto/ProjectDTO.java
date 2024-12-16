@@ -1,4 +1,4 @@
-package com.sprinthub.sprinthub.dtos;
+package com.sprinthub.sprinthub.projects.application.dto;
 
 
 import lombok.AllArgsConstructor;

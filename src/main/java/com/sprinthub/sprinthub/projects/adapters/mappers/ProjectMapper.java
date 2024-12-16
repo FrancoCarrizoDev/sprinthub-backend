@@ -1,6 +1,9 @@
-package com.sprinthub.sprinthub.dtos;
+package com.sprinthub.sprinthub.projects.adapters.mappers;
 
-import com.sprinthub.sprinthub.models.ProjectJPA;
+import com.sprinthub.sprinthub.projects.domain.model.ProjectJPA;
+import com.sprinthub.sprinthub.projects.application.dto.CreateProjectDTO;
+import com.sprinthub.sprinthub.projects.application.dto.ProjectDTO;
+import com.sprinthub.sprinthub.projects.application.dto.UpdateProjectDTO;
 import org.springframework.stereotype.Component;
 
 @Component

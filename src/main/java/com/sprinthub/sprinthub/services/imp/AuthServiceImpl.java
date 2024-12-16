@@ -1,9 +1,9 @@
 package com.sprinthub.sprinthub.services.imp;
 
 import com.sprinthub.sprinthub.dtos.OAuthUserDto;
-import com.sprinthub.sprinthub.models.UserAuthJPA;
-import com.sprinthub.sprinthub.models.UserJPA;
-import com.sprinthub.sprinthub.repositories.UserRepository;
+import com.sprinthub.sprinthub.domain.models.UserAuthJPA;
+import com.sprinthub.sprinthub.domain.models.UserJPA;
+import com.sprinthub.sprinthub.domain.repository.UserRepository;
 import com.sprinthub.sprinthub.services.AuthService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

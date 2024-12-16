@@ -1,4 +1,4 @@
-package com.sprinthub.sprinthub.models;
+package com.sprinthub.sprinthub.domain.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
