@@ -1,9 +1,9 @@
 package com.sprinthub.sprinthub.projects.application.usecases;
 
-import com.sprinthub.sprinthub.projects.adapters.mappers.ProjectMapper;
+import com.sprinthub.sprinthub.projects.application.mappers.ProjectMapper;
 import com.sprinthub.sprinthub.projects.application.dto.ProjectDTO;
 import com.sprinthub.sprinthub.projects.application.dto.UpdateProjectDTO;
-import com.sprinthub.sprinthub.projects.domain.model.ProjectJPA;
+import com.sprinthub.sprinthub.projects.domain.models.ProjectJPA;
 import com.sprinthub.sprinthub.projects.domain.repository.ProjectRepository;
 
 import java.util.UUID;

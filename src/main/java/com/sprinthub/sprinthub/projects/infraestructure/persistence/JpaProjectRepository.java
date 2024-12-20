@@ -1,6 +1,6 @@
 package com.sprinthub.sprinthub.projects.infraestructure.persistence;
 
-import com.sprinthub.sprinthub.projects.domain.model.ProjectJPA;
+import com.sprinthub.sprinthub.projects.domain.models.ProjectJPA;
 import com.sprinthub.sprinthub.projects.domain.repository.ProjectRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +18,8 @@ public class JpaProjectRepository implements ProjectRepository {
     }
 
     @Override
-    public void save(ProjectJPA project) {
-        springDataRepository.save(project);
+    public ProjectJPA save(ProjectJPA project) {
+        return springDataRepository.save(project);
     }
 
     @Override

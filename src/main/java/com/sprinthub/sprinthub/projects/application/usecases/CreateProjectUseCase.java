@@ -1,11 +1,11 @@
 package com.sprinthub.sprinthub.projects.application.usecases;
 
-import com.sprinthub.sprinthub.domain.models.UserJPA;
-import com.sprinthub.sprinthub.domain.repository.UserRepository;
-import com.sprinthub.sprinthub.projects.adapters.mappers.ProjectMapper;
+import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
+import com.sprinthub.sprinthub.projects.application.mappers.ProjectMapper;
 import com.sprinthub.sprinthub.projects.application.dto.CreateProjectDTO;
 import com.sprinthub.sprinthub.projects.application.dto.ProjectDTO;
-import com.sprinthub.sprinthub.projects.domain.model.ProjectJPA;
+import com.sprinthub.sprinthub.projects.domain.models.ProjectJPA;
 import com.sprinthub.sprinthub.projects.domain.repository.ProjectRepository;
 
 import java.util.UUID;
@@ -27,7 +27,7 @@ public class CreateProjectUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
         ProjectJPA projectJPA = projectMapper.fromCreateDTO(project);
         projectJPA.setUser(user);
-        projectRepository.save(projectJPA);
-        return projectMapper.toDTO(projectJPA);
+        ProjectJPA savedProject = projectRepository.save(projectJPA);
+        return projectMapper.toDTO(savedProject);
     }
 }
