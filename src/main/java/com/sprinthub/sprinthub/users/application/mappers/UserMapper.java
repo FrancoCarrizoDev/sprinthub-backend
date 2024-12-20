@@ -54,7 +54,9 @@ public class UserMapper {
         auth.setExternalId(null);
         auth.setVerified(false);
         auth.setLastLogin(LocalDateTime.now());
+        auth.setPasswordHash(dto.getPassword());
         user.setAuth(auth);
+        auth.setUser(user);
         return user;
     }
 }
