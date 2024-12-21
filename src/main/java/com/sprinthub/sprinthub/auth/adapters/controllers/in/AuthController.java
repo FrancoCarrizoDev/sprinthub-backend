@@ -1,4 +1,4 @@
-package com.sprinthub.sprinthub.auth.adapters.controllers;
+package com.sprinthub.sprinthub.auth.adapters.controllers.in;
 
 
 import com.sprinthub.sprinthub.auth.application.dtos.AuthResponseDto;

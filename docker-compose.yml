@@ -48,6 +48,33 @@ services:
     networks:
       - sprinthub_network
     restart: unless-stopped
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: sprinthub-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - sprinthub_network
+    restart: unless-stopped
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: sprinthub-kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: sprinthub-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - sprinthub_network
+    restart: unless-stopped
 
 volumes:
   postgres_data:

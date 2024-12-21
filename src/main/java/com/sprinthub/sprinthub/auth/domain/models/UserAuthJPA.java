@@ -31,6 +31,12 @@ public class UserAuthJPA {
     @Column(name = "external_id")
     private String externalId;
 
+    @Column(name = "verification_code", length = 6)
+    private String verificationCode;
+
+    @Column(name = "verification_expires_at")
+    private LocalDateTime verificationExpiresAt;
+
     @Column(name = "is_verified", nullable = false)
     private boolean isVerified = false;
 

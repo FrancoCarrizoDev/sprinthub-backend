@@ -1,4 +1,4 @@
-package com.sprinthub.sprinthub.users.adapters;
+package com.sprinthub.sprinthub.users.adapters.in;
 
 import com.sprinthub.sprinthub.users.application.dtos.CreateUserDto;
 import com.sprinthub.sprinthub.users.application.usecases.CreateNewUserUseCase;

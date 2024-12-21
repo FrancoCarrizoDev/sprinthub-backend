@@ -1,4 +1,4 @@
-package com.sprinthub.sprinthub.projects.adapters.controllers;
+package com.sprinthub.sprinthub.projects.adapters.controllers.in;
 
 import com.sprinthub.sprinthub.projects.application.dto.CreateProjectDTO;
 import com.sprinthub.sprinthub.projects.application.dto.ProjectDTO;

@@ -32,9 +32,11 @@ dependencies {
 	implementation 'com.google.auth:google-auth-library-oauth2-http:1.18.0'
 	implementation group: 'com.google.api-client', name: 'google-api-client-gson', version: '2.7.0'
 	implementation group: 'com.google.api-client', name: 'google-api-client', version: '2.7.0'
+	implementation 'org.springframework.kafka:spring-kafka:3.3.0'
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // Para usar Jackson con JJWT
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
 	testImplementation 'org.mockito:mockito-core:5.6.0'
 	testImplementation 'org.mockito:mockito-junit-jupiter:5.6.0'
