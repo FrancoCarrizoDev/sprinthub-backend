@@ -19,7 +19,7 @@ import java.util.Collections;
 
 
 @Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class OAuthJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String CLIENT_ID = "890001511003-13onja4lfbciddspiim8ulsaet20ut3i.apps.googleusercontent.com";
 
@@ -72,4 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+
 }

@@ -17,10 +17,11 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-@Component
+
 public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String SECRET_KEY = "tuClaveSecretaSuperSegura"; // Cambiar por una clave almacenada de forma segura
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -59,4 +60,6 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
         }
         return null;
     }
+
+
 }

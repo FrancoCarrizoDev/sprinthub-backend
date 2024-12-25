@@ -18,7 +18,7 @@ public class SaveOauthUserUseCase {
     public void execute(OAuthUserDto user) {
         UserJPA userJPA =  new UserJPA();
         userJPA.setEmail(user.getEmail());
-        userJPA.setFirstName(user.getName());
+        userJPA.setFirstName(user.getFirstName());
         userJPA.setLastName(null);
         UserAuthJPA userAuth = new UserAuthJPA();
         userAuth.setExternalId(user.getExternalId());

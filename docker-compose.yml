@@ -21,12 +21,12 @@ services:
   mongodb:
     env_file:
       - .env
-    image: mongo:6.0-focal
+    image: mongo:latest
     container_name: sprinthub-mongodb
     environment:
       MONGO_INITDB_DATABASE: sprinthub_events
       MONGO_INITDB_ROOT_USERNAME: sprinthub_admin
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+      MONGO_INITDB_ROOT_PASSWORD: sprinthub_admin_password
     volumes:
       - mongodb_data:/data/db
     ports:

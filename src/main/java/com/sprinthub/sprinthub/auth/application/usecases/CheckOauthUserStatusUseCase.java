@@ -1,9 +1,9 @@
 package com.sprinthub.sprinthub.auth.application.usecases;
 
+import com.sprinthub.sprinthub.auth.domain.enums.OAuthUserStatus;
 import com.sprinthub.sprinthub.users.domain.models.UserJPA;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 
-import java.util.HashMap;
 import java.util.Optional;
 
 public class CheckOauthUserStatusUseCase {
@@ -14,23 +14,19 @@ public class CheckOauthUserStatusUseCase {
         this.userRepository = userRepository;
     }
 
-    public HashMap<String, String> execute(String email) {
-        HashMap<String, String> response = new HashMap<>();
+    public OAuthUserStatus execute(String email) {
         Optional<UserJPA> userJPA = userRepository.findByEmail(email);
 
-        if(userJPA.isEmpty()){
-            response.put("status", "new_user");
+        if (userJPA.isEmpty()) {
+            return OAuthUserStatus.NEW_USER;
         } else {
             UserJPA user = userJPA.get();
-
-            if(user.getAuth().getExternalId() == null){
-                response.put("status", "existing_user_no_google_id");
+            if (user.getAuth().getExternalId() == null) {
+                return OAuthUserStatus.EXISTING_USER_NO_GOOGLE_ID;
             } else {
-                response.put("status", "existing_user_with_google_id");
+                return OAuthUserStatus.EXISTING_USER_WITH_GOOGLE_ID;
             }
         }
-
-        return response;
     }
 
 }

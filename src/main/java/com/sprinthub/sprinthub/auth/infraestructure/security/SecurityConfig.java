@@ -12,13 +12,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 
-    private final JwtAuthenticationFilter googleJwtAuthenticationFilter; // Filtro existente para Google OAuth
-    private final CustomJwtAuthenticationFilter customJwtAuthenticationFilter; // Nuevo filtro para JWT personalizados
+    private final OAuthJwtAuthenticationFilter googleJwtAuthenticationFilter; // Filtro existente para Google OAuth
+// Nuevo filtro para JWT personalizados
 
-    public SecurityConfig(JwtAuthenticationFilter googleJwtAuthenticationFilter,
-                          CustomJwtAuthenticationFilter customJwtAuthenticationFilter) {
+    public SecurityConfig(OAuthJwtAuthenticationFilter googleJwtAuthenticationFilter
+                          ) {
         this.googleJwtAuthenticationFilter = googleJwtAuthenticationFilter;
-        this.customJwtAuthenticationFilter = customJwtAuthenticationFilter;
     }
 
     @Bean
@@ -31,8 +30,8 @@ public class SecurityConfig {
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(googleJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(customJwtAuthenticationFilter, JwtAuthenticationFilter.class); // El nuevo filtro se ejecuta después
+                .addFilterBefore(googleJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // El filtro de Google se ejecuta primero
+                ; // El nuevo filtro se ejecuta después
 
         return http.build();
     }
