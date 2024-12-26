@@ -5,9 +5,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Date;
 
-public class JwtTokenUtil {
+public class CustomJwtUtil {
 
-    private static final String SECRET_KEY = "EstaEsUnaClaveSecretaMuySegura12345678";
+    private static final String SECRET_KEY = "tuClaveSecretaSuperSegura";
 
     public static String generateToken(String email) {
         return Jwts.builder()
@@ -17,4 +17,6 @@ public class JwtTokenUtil {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes())
                 .compact();
     }
+
+
 }

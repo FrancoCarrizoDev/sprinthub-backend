@@ -2,6 +2,9 @@ package com.sprinthub.sprinthub.auth.infraestructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,28 +14,32 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
+    private final GoogleAuthenticationProvider googleAuthenticationProvider;
+    private final CustomJwtAuthenticationProvider customJwtAuthenticationProvider;
 
-    private final OAuthJwtAuthenticationFilter googleJwtAuthenticationFilter; // Filtro existente para Google OAuth
-// Nuevo filtro para JWT personalizados
-
-    public SecurityConfig(OAuthJwtAuthenticationFilter googleJwtAuthenticationFilter
-                          ) {
-        this.googleJwtAuthenticationFilter = googleJwtAuthenticationFilter;
+    public SecurityConfig(GoogleAuthenticationProvider googleAuthenticationProvider,
+                          CustomJwtAuthenticationProvider customJwtAuthenticationProvider) {
+        this.googleAuthenticationProvider = googleAuthenticationProvider;
+        this.customJwtAuthenticationProvider = customJwtAuthenticationProvider;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return new ProviderManager(googleAuthenticationProvider, customJwtAuthenticationProvider);
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/signin").permitAll()
                         .requestMatchers("/api/users/create").permitAll()
                         .requestMatchers("/public/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(googleJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // El filtro de Google se ejecuta primero
-                ; // El nuevo filtro se ejecuta después
-
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

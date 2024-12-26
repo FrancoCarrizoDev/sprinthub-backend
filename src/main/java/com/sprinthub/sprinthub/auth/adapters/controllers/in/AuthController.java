@@ -5,14 +5,18 @@ package com.sprinthub.sprinthub.auth.adapters.controllers.in;
 import com.sprinthub.sprinthub.auth.application.dtos.LoginRequestDto;
 import com.sprinthub.sprinthub.auth.application.dtos.OAuthUserDto;
 import com.sprinthub.sprinthub.auth.application.dtos.OAuthUserSigningResponse;
-import com.sprinthub.sprinthub.auth.domain.enums.OAuthUserStatus;
-import com.sprinthub.sprinthub.shared.responses.ApiResponse;
 import com.sprinthub.sprinthub.auth.application.usecases.CheckOauthUserStatusUseCase;
 import com.sprinthub.sprinthub.auth.application.usecases.SaveOauthUserUseCase;
-import com.sprinthub.sprinthub.auth.infraestructure.security.JwtTokenUtil;
+import com.sprinthub.sprinthub.auth.domain.enums.OAuthUserStatus;
+import com.sprinthub.sprinthub.auth.infraestructure.security.CustomJwtUtil;
+import com.sprinthub.sprinthub.shared.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 
 @RestController
@@ -30,47 +34,42 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequestDto request) {
-        String token = JwtTokenUtil.generateToken(request.getEmail());
+        String token = CustomJwtUtil.generateToken(request.getEmail());
         return ResponseEntity.ok(true);
     }
 
 
 
     @PostMapping("/signin")
-    @PreAuthorize("isAuthenticated()")
-    //public ResponseEntity<ApiResponse<OAuthUserSigningResponse>> oAuthSignIn(@RequestBody OAuthUserDto user) {
+    public ResponseEntity<ApiResponse<OAuthUserSigningResponse>> oAuthSignIn() {
 
-    public ResponseEntity<?> oAuthSignIn(@RequestBody Object user) {
-        return ResponseEntity.ok(true);
-        /*OAuthUserStatus status = checkOauthUserStatusUseCase.execute(user.getEmail());
-        OAuthUserSigningResponse response = new OAuthUserSigningResponse(status, user.getEmail(), user.getFirstName(), user.getLastName());
-        switch (status) {
-            case NEW_USER:
-                try {
-                    createOauthUserUseCase.execute(user);
-                    return ResponseEntity.ok(
-                            new ApiResponse<>(true, response, null)
-                    );
-                } catch (Exception e) {
-                    return ResponseEntity.badRequest().body(
-                            new ApiResponse<>(false, response, "Error saving user")
-                    );
-                }
 
-            case EXISTING_USER_NO_GOOGLE_ID:
-                return ResponseEntity.badRequest().body(
-                        new ApiResponse<>(false, response, status.getMessage()
-                ));
 
-            case EXISTING_USER_WITH_GOOGLE_ID:
-            default:
-                return ResponseEntity.ok(
-                        new ApiResponse<>(true, response, null)
-                );
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
+        Map<String, Object> details = (Map<String, Object>) authentication.getDetails();
+        String name = (String) details.get("name");
+        String givenName = (String) details.get("givenName");
+        String familyName = (String) details.get("familyName");
+        String externalId = (String) details.get("externalId");
+
+        if(email == null) {
+            return ResponseEntity.badRequest().build();
         }
 
-         */
+        OAuthUserStatus status = checkOauthUserStatusUseCase.execute(email);
+
+        if(status == OAuthUserStatus.NEW_USER) {
+            OAuthUserDto user = new OAuthUserDto(email,name, externalId, familyName);
+            createOauthUserUseCase.execute(user);
+        }
+
+        OAuthUserSigningResponse bodyResponse = new OAuthUserSigningResponse(status, email,name, familyName);
+        return ResponseEntity.ok(new ApiResponse(true, bodyResponse, null));
+
+
+
     }
 
 
