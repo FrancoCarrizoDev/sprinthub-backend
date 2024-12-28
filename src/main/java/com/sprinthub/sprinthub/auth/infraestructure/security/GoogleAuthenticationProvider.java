@@ -22,7 +22,7 @@ public class GoogleAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String token = (String) authentication.getCredentials();
+        String token = (String) authentication.getCredentials(); // Ahora tendrá el token válido
 
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
@@ -39,6 +39,8 @@ public class GoogleAuthenticationProvider implements AuthenticationProvider {
                 String givenName = (String) payload.get("given_name");
                 String familyName = (String) payload.get("family_name");
                 String externalId = payload.getSubject();
+
+                // Crear el objeto de autenticación
                 OAuthUserDto user = new OAuthUserDto(email, name, externalId, familyName);
                 return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
             } else {
