@@ -11,30 +11,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final GoogleAuthenticationFilter googleAuthenticationFilter;
-
-    public SecurityConfig(
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            GoogleAuthenticationFilter googleAuthenticationFilter) {
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-        this.googleAuthenticationFilter = googleAuthenticationFilter;
-    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, UnifiedAuthenticationFilter unifiedAuthenticationFilter) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/users/create").permitAll() // Públicos
                         .requestMatchers("/api/auth/signin").authenticated() // Solo Google OAuth
-                        .anyRequest().authenticated() // Endpoints privados (cualquier filtro válido)
+                        .anyRequest().authenticated() // Endpoints privados
                 )
-                .addFilterBefore(googleAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(unifiedAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

@@ -14,35 +14,35 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class GoogleAuthenticationFilter extends OncePerRequestFilter {
+public class UnifiedAuthenticationFilter extends OncePerRequestFilter {
 
-    private final GoogleAuthenticationProvider googleAuthenticationProvider;
+    private final CompositeAuthenticationProvider compositeAuthenticationProvider;
 
-    public GoogleAuthenticationFilter(GoogleAuthenticationProvider googleAuthenticationProvider) {
-        this.googleAuthenticationProvider = googleAuthenticationProvider;
+    public UnifiedAuthenticationFilter(CompositeAuthenticationProvider compositeAuthenticationProvider) {
+        this.compositeAuthenticationProvider = compositeAuthenticationProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         String path = request.getRequestURI();
 
-        // Saltar si el endpoint es público
         if (path.equals("/api/auth/login") || path.equals("/api/users/create")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Validar Google OAuth token solo para /api/auth/signin o endpoints privados
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
+            String token = authorizationHeader.substring(7); // Extraer el token sin "Bearer "
+
             try {
-                // Crear un objeto Authentication con el token como credencial
+                // Crear el objeto de autenticación con el token como credencial
                 Authentication authentication = new UsernamePasswordAuthenticationToken(null, token);
 
-                // Delegar al proveedor de autenticación
-                Authentication authResult = googleAuthenticationProvider.authenticate(authentication);
+                // Intentar autenticar usando el CompositeAuthenticationProvider
+                Authentication authResult = compositeAuthenticationProvider.authenticate(authentication);
 
                 // Establecer el contexto de seguridad si la autenticación es exitosa
                 SecurityContextHolder.getContext().setAuthentication(authResult);
@@ -51,11 +51,12 @@ public class GoogleAuthenticationFilter extends OncePerRequestFilter {
             } catch (AuthenticationException e) {
                 SecurityContextHolder.clearContext();
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Invalid Google ID token");
+                response.getWriter().write("Authentication failed");
                 return;
             }
         }
 
+        // Continuar si no hay encabezado de autorización
         filterChain.doFilter(request, response);
     }
 }
