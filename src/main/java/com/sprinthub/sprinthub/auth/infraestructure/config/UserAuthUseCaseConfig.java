@@ -1,19 +1,21 @@
 package com.sprinthub.sprinthub.auth.infraestructure.config;
 
-import com.sprinthub.sprinthub.auth.application.usecases.CheckEmailUseCase;
 import com.sprinthub.sprinthub.auth.application.usecases.CheckOauthUserStatusUseCase;
 import com.sprinthub.sprinthub.auth.application.usecases.SaveOauthUserUseCase;
+import com.sprinthub.sprinthub.auth.application.usecases.ValidateLoginUseCase;
+import com.sprinthub.sprinthub.auth.infraestructure.security.CustomJwtAuthenticationProvider;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class UserAuthUseCaseConfig {
 
 
     @Bean
-    public CheckEmailUseCase checkEmailUseCase(UserRepository userRepository) {
-        return new CheckEmailUseCase(userRepository);
+    ValidateLoginUseCase validateLoginUseCase(UserRepository userRepository, CustomJwtAuthenticationProvider customJwtAuthenticationProvider, PasswordEncoder passwordEncoder) {
+        return new ValidateLoginUseCase(userRepository, passwordEncoder, customJwtAuthenticationProvider);
     }
 
     @Bean

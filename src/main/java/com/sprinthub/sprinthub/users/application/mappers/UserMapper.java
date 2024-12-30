@@ -1,5 +1,6 @@
 package com.sprinthub.sprinthub.users.application.mappers;
 
+import com.sprinthub.sprinthub.auth.application.dtos.AuthProviderEnum;
 import com.sprinthub.sprinthub.auth.domain.models.UserAuthJPA;
 import com.sprinthub.sprinthub.users.application.dtos.CreateUserDto;
 import com.sprinthub.sprinthub.users.application.dtos.UserDto;
@@ -20,7 +21,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .isActive(user.getIsActive())
-                .authProvider(userAuth.getAuthProvider())
+                .authProvider(userAuth.getAuthProvider().toString())
                 .externalId(userAuth.getExternalId())
                 .isVerified(userAuth.isVerified())
                 .lastLogin(userAuth.getLastLogin())
@@ -35,7 +36,7 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setIsActive(dto.getIsActive());
         UserAuthJPA auth = new UserAuthJPA();
-        auth.setAuthProvider(dto.getAuthProvider());
+        auth.setAuthProvider(AuthProviderEnum.fromString(dto.getAuthProvider()));
         auth.setExternalId(dto.getExternalId());
         auth.setVerified(dto.isVerified());
         auth.setLastLogin(dto.getLastLogin());
@@ -50,7 +51,7 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setIsActive(true);
         UserAuthJPA auth = new UserAuthJPA();
-        auth.setAuthProvider("credentials");
+        auth.setAuthProvider(AuthProviderEnum.CREDENTIALS);
         auth.setExternalId(null);
         auth.setVerified(false);
         auth.setLastLogin(LocalDateTime.now());

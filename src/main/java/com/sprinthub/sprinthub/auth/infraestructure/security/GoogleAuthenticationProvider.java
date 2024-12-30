@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.sprinthub.sprinthub.auth.application.dtos.OAuthUserDto;
+import com.sprinthub.sprinthub.shared.config.GoogleJwtConfig;
 import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,7 +19,11 @@ import java.util.Collections;
 @Component
 public class GoogleAuthenticationProvider implements AuthenticationProvider {
 
-    private static final String CLIENT_ID = "890001511003-13onja4lfbciddspiim8ulsaet20ut3i.apps.googleusercontent.com";
+    private final GoogleJwtConfig googleJwtConfig;
+
+    public GoogleAuthenticationProvider(GoogleJwtConfig googleJwtConfig) {
+        this.googleJwtConfig = googleJwtConfig;
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -27,7 +32,7 @@ public class GoogleAuthenticationProvider implements AuthenticationProvider {
         try {
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
                     new NetHttpTransport(), GsonFactory.getDefaultInstance())
-                    .setAudience(Collections.singletonList(CLIENT_ID))
+                    .setAudience(Collections.singletonList(googleJwtConfig.getClientId()))
                     .build();
 
             GoogleIdToken idToken = verifier.verify(token);

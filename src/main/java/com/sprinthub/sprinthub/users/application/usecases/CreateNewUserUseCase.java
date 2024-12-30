@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 
 public class CreateNewUserUseCase {
 
-    private UserRepository userRepository;
-    private UserMapper userMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final PasswordHasher passwordHasher;
     private final KafkaProducerAdapter kafkaProducerAdapter;
     private final Logger logger = LoggerFactory.getLogger(CreateNewUserUseCase.class);

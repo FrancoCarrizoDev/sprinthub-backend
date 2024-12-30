@@ -1,5 +1,6 @@
 package com.sprinthub.sprinthub.auth.application.usecases;
 
+import com.sprinthub.sprinthub.auth.application.dtos.AuthProviderEnum;
 import com.sprinthub.sprinthub.auth.application.dtos.OAuthUserDto;
 import com.sprinthub.sprinthub.auth.domain.models.UserAuthJPA;
 import com.sprinthub.sprinthub.users.domain.models.UserJPA;
@@ -22,7 +23,7 @@ public class SaveOauthUserUseCase {
         userJPA.setLastName(null);
         UserAuthJPA userAuth = new UserAuthJPA();
         userAuth.setExternalId(user.getExternalId());
-        userAuth.setAuthProvider("google");
+        userAuth.setAuthProvider(AuthProviderEnum.GOOGLE);
         userAuth.setUser(userJPA);
         userAuth.setLastLogin(LocalDateTime.now());
         userAuth.setVerified(true);

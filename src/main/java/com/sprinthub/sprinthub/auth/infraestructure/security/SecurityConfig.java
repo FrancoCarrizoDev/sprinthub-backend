@@ -17,6 +17,7 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/login", "/api/users/create").permitAll() // Públicos
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger
                         .requestMatchers("/api/auth/signin").authenticated() // Solo Google OAuth
                         .anyRequest().authenticated() // Endpoints privados
                 )

@@ -1,5 +1,6 @@
 package com.sprinthub.sprinthub.auth.infraestructure.security;
 
+import com.sprinthub.sprinthub.shared.config.CustomJwtConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +22,11 @@ import java.util.Date;
 public class CustomJwtAuthenticationProvider implements AuthenticationProvider {
 
     // Generar una clave segura de 256 bits
-    private static final byte[] SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256).getEncoded();
+    private final SecretKey secretKey;
+
+    public CustomJwtAuthenticationProvider(CustomJwtConfig customJwtConfig) {
+        this.secretKey = Keys.hmacShaKeyFor(customJwtConfig.getSecret().getBytes(StandardCharsets.UTF_8));
+    }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -31,7 +36,7 @@ public class CustomJwtAuthenticationProvider implements AuthenticationProvider {
 
         try {
             Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY)) // Usa hmacShaKeyFor para cumplir con HS256
+                    .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
@@ -49,12 +54,12 @@ public class CustomJwtAuthenticationProvider implements AuthenticationProvider {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
-    public static String generateToken(String email) {
+    public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000))
-                .signWith(Keys.hmacShaKeyFor(SECRET_KEY), SignatureAlgorithm.HS256)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
     }
 }

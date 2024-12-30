@@ -1,5 +1,6 @@
 package com.sprinthub.sprinthub.auth.domain.models;
 
+import com.sprinthub.sprinthub.auth.application.dtos.AuthProviderEnum;
 import com.sprinthub.sprinthub.users.domain.models.UserJPA;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -23,7 +24,8 @@ public class UserAuthJPA {
     private UserJPA user;
 
     @Column(name = "auth_provider", nullable = false)
-    private String authProvider;
+    @Enumerated(EnumType.STRING)
+    private AuthProviderEnum authProvider = AuthProviderEnum.CREDENTIALS;
 
     @Column(name = "password_hash")
     private String passwordHash;

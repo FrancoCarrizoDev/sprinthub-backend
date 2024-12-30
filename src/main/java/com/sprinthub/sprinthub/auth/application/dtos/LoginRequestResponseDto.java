@@ -1,13 +1,15 @@
 package com.sprinthub.sprinthub.auth.application.dtos;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class AuthResponseDto {
+@Builder
+public class LoginRequestResponseDto {
     private String firstName;
     private String lastName;
     private String email;

@@ -3,12 +3,15 @@ package com.sprinthub.sprinthub.auth.adapters.controllers.in;
 
 
 import com.sprinthub.sprinthub.auth.application.dtos.LoginRequestDto;
+import com.sprinthub.sprinthub.auth.application.dtos.LoginRequestResponseDto;
 import com.sprinthub.sprinthub.auth.application.dtos.OAuthUserDto;
 import com.sprinthub.sprinthub.auth.application.dtos.OAuthUserSigningResponse;
 import com.sprinthub.sprinthub.auth.application.usecases.CheckOauthUserStatusUseCase;
 import com.sprinthub.sprinthub.auth.application.usecases.SaveOauthUserUseCase;
+import com.sprinthub.sprinthub.auth.application.usecases.ValidateLoginUseCase;
 import com.sprinthub.sprinthub.auth.domain.enums.OAuthUserStatus;
 import com.sprinthub.sprinthub.auth.infraestructure.security.CustomJwtAuthenticationProvider;
+import com.sprinthub.sprinthub.shared.exceptions.RegisteredUserWithCredentialsException;
 import com.sprinthub.sprinthub.shared.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,19 +25,24 @@ public class AuthController {
 
     private final CheckOauthUserStatusUseCase checkOauthUserStatusUseCase;
 
+    private final ValidateLoginUseCase validateLoginUseCase;
     private final SaveOauthUserUseCase createOauthUserUseCase;
 
 
 
-    public AuthController(CheckOauthUserStatusUseCase checkOauthUserStatusUseCase, SaveOauthUserUseCase createOauthUserUseCase) {
+    public AuthController(CheckOauthUserStatusUseCase checkOauthUserStatusUseCase, SaveOauthUserUseCase createOauthUserUseCase, ValidateLoginUseCase validateLoginUseCase) {
         this.checkOauthUserStatusUseCase = checkOauthUserStatusUseCase;
         this.createOauthUserUseCase = createOauthUserUseCase;
+        this.validateLoginUseCase = validateLoginUseCase;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequestDto request) {
-        String token = CustomJwtAuthenticationProvider.generateToken(request.getEmail());
-        return ResponseEntity.ok(token);
+    public ResponseEntity<ApiResponse<LoginRequestResponseDto>> login(@RequestBody LoginRequestDto request) {
+
+
+        ApiResponse<LoginRequestResponseDto> response = new ApiResponse<>(true, validateLoginUseCase.execute(request), null);
+
+        return ResponseEntity.ok(response);
     }
 
 
@@ -42,9 +50,7 @@ public class AuthController {
     @PostMapping("/signin")
     public ResponseEntity<ApiResponse<OAuthUserSigningResponse>> oAuthSignIn() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         OAuthUserDto user = (OAuthUserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
 
 
         if(user.getEmail() == null) {
@@ -54,15 +60,16 @@ public class AuthController {
         OAuthUserStatus status = checkOauthUserStatusUseCase.execute(user.getEmail());
 
         if(status == OAuthUserStatus.NEW_USER) {
-
             createOauthUserUseCase.execute(user);
         }
 
+        if(status == OAuthUserStatus.EXISTING_USER_NO_GOOGLE_ID){
+            throw new RegisteredUserWithCredentialsException("User already exists with credentials");
+        }
+
         OAuthUserSigningResponse bodyResponse = new OAuthUserSigningResponse(status, user.getEmail(), user.getFirstName(), user.getLastName());
-        return ResponseEntity.ok(new ApiResponse(true, bodyResponse, null));
-
-
-
+        ApiResponse<OAuthUserSigningResponse> response = new ApiResponse<>(true, bodyResponse, null);
+        return ResponseEntity.ok(response);
     }
 
 
