@@ -1,6 +1,6 @@
 package com.sprinthub.sprinthub.projects.application.usecases;
 
-import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.infraestructure.persistence.SpringDataUserRepository;
 import com.sprinthub.sprinthub.projects.application.mappers.ProjectMapper;
 import com.sprinthub.sprinthub.projects.application.dto.CreateProjectDTO;
@@ -40,7 +40,7 @@ public class CreateProjectUseCaseTest {
         ProjectJPA project = new ProjectJPA();
         project.setName("Nuevo Proyecto");
         project.setDescription("Descripción");
-        UserJPA user = new UserJPA();
+        UserEntity user = new UserEntity();
         user.setId(userId);
         project.setUser(user);
         ProjectDTO expectedDTO = new ProjectDTO(UUID.randomUUID(), "Nuevo Proyecto", "Descripción");

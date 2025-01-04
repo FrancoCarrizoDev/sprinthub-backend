@@ -1,5 +1,6 @@
 package com.sprinthub.sprinthub.projects.infraestructure.config;
 
+import com.sprinthub.sprinthub.users.domain.models.UserMapper;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import com.sprinthub.sprinthub.projects.application.mappers.ProjectMapper;
 import com.sprinthub.sprinthub.projects.application.usecases.*;
@@ -31,7 +32,7 @@ public class UseCaseConfig {
     }
 
     @Bean
-    public CreateProjectUseCase createProjectUseCase(ProjectRepository projectRepository, ProjectMapper projectMapper, UserRepository userRepository) {
-        return new CreateProjectUseCase(projectRepository, userRepository, projectMapper);
+    public CreateProjectUseCase createProjectUseCase(ProjectRepository projectRepository, ProjectMapper projectMapper, UserRepository userRepository, UserMapper userMapper) {
+        return new CreateProjectUseCase(projectRepository, userRepository, projectMapper, userMapper);
     }
 }

@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-package com.sprinthub.sprinthub.users.domain.models;
+package com.sprinthub.sprinthub.users.infraestructure.entities;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Table(name = "users")
 @Getter
 @Setter
-public class UserJPA {
+public class UserEntity {
 
     @Id
     @GeneratedValue
@@ -44,8 +44,14 @@ public class UserJPA {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    @PrePersist
+    public void onPrePersist() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @PreUpdate
-    public void preUpdate() {
+    public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
 }

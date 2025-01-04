@@ -1,14 +1,14 @@
 package com.sprinthub.sprinthub.users.domain.repository;
-import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.domain.models.User;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository {
     boolean existsByEmail(String email);
-    Optional<UserJPA> findById(UUID email);
-    Optional<UserJPA> findByEmail(String email);
+    Optional<User> findById(UUID email);
+    Optional<User> findByEmail(String email);
 
     //save method
-    UserJPA save(UserJPA userJPA);
+    User save(User userJPA);
 }

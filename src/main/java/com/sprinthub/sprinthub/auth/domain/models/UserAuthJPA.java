@@ -1,7 +1,7 @@
 package com.sprinthub.sprinthub.auth.domain.models;
 
 import com.sprinthub.sprinthub.auth.application.dtos.AuthProviderEnum;
-import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +21,7 @@ public class UserAuthJPA {
 
     @OneToOne(optional = false) // Cambiado de ManyToOne a OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true) // unique=true garantiza unicidad en la base de datos
-    private UserJPA user;
+    private UserEntity user;
 
     @Column(name = "auth_provider", nullable = false)
     @Enumerated(EnumType.STRING)

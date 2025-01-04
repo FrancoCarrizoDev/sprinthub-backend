@@ -1,5 +1,5 @@
 package com.sprinthub.sprinthub.auth.domain.services;
 
-public interface PasswordHasher {
+public interface PasswordHashes {
     String hashPassword(String rawPassword);
 }

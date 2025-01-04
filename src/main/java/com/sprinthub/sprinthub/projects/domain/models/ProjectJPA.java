@@ -1,6 +1,6 @@
 package com.sprinthub.sprinthub.projects.domain.models;
 
-import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class ProjectJPA {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserJPA user;
+    private UserEntity user;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

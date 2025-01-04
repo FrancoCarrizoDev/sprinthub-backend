@@ -16,7 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, UnifiedAuthenticationFilter unifiedAuthenticationFilter) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login", "/api/users/create").permitAll() // Públicos
+                        .requestMatchers("/api/auth/login", "/api/users/create", "/api/auth/verification-code").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // Swagger
                         .requestMatchers("/api/auth/signin").authenticated() // Solo Google OAuth
                         .anyRequest().authenticated() // Endpoints privados

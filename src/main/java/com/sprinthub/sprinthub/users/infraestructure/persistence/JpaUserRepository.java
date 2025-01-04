@@ -1,6 +1,8 @@
 package com.sprinthub.sprinthub.users.infraestructure.persistence;
 
-import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.domain.models.User;
+import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,18 +13,23 @@ import java.util.UUID;
 public class JpaUserRepository implements UserRepository {
     private final SpringDataUserRepository springDataRepository;
 
-    public JpaUserRepository(SpringDataUserRepository springDataRepository) {
+    private final UserMapper userMapper;
+
+    public JpaUserRepository(SpringDataUserRepository springDataRepository, UserMapper userMapper) {
         this.springDataRepository = springDataRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
-    public UserJPA save(UserJPA userJPA) {
-        return springDataRepository.save(userJPA);
+    public User save(User user) {
+        UserEntity userEntity = userMapper.toEntity(user);
+        userEntity = springDataRepository.save(userEntity);
+        return userMapper.toDomain(userEntity);
     }
 
     @Override
-    public Optional<UserJPA> findByEmail(String email) {
-        return springDataRepository.findByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        return springDataRepository.findByEmail(email).map(userMapper::toDomain);
     }
 
     @Override
@@ -31,7 +38,8 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<UserJPA> findById(UUID id) {
-        return springDataRepository.findById(id);
+    public Optional<User> findById(UUID id) {
+        return springDataRepository.findById(id)
+                .map(userMapper::toDomain);
     }
 }

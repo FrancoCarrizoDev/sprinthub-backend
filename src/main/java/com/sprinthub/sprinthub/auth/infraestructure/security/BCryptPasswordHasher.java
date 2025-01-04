@@ -1,11 +1,11 @@
 package com.sprinthub.sprinthub.auth.infraestructure.security;
 
-import com.sprinthub.sprinthub.auth.domain.services.PasswordHasher;
+import com.sprinthub.sprinthub.auth.domain.services.PasswordHashes;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BCryptPasswordHasher implements PasswordHasher {
+public class BCryptPasswordHasher implements PasswordHashes {
     private final PasswordEncoder passwordEncoder;
 
 

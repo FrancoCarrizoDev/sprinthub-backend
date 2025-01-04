@@ -3,12 +3,12 @@ package com.sprinthub.sprinthub.users.application.usecases;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sprinthub.sprinthub.auth.domain.models.Auth;
-import com.sprinthub.sprinthub.auth.domain.services.PasswordHasher;
+import com.sprinthub.sprinthub.auth.domain.services.PasswordHashes;
 import com.sprinthub.sprinthub.messaging.domain.models.UserCreatedEvent;
 import com.sprinthub.sprinthub.messaging.adapters.out.KafkaProducerAdapter;
 import com.sprinthub.sprinthub.users.application.dtos.CreateUserDto;
-import com.sprinthub.sprinthub.users.application.mappers.UserMapper;
-import com.sprinthub.sprinthub.users.domain.models.UserJPA;
+import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +19,13 @@ public class CreateNewUserUseCase {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final PasswordHasher passwordHasher;
+    private final PasswordHashes passwordHasher;
     private final KafkaProducerAdapter kafkaProducerAdapter;
     private final Logger logger = LoggerFactory.getLogger(CreateNewUserUseCase.class);
     private final ObjectMapper objectMapper;
 
-    public CreateNewUserUseCase(UserRepository userRepository, UserMapper userMapper, PasswordHasher passwordHasher, KafkaProducerAdapter kafkaProducerAdapter, ObjectMapper objectMapper) {
+
+    public CreateNewUserUseCase(UserRepository userRepository, UserMapper userMapper, PasswordHashes passwordHasher, KafkaProducerAdapter kafkaProducerAdapter, ObjectMapper objectMapper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordHasher = passwordHasher;
@@ -42,7 +43,7 @@ public class CreateNewUserUseCase {
             createUserDto.setPassword(passwordHasher.hashPassword(createUserDto.getPassword()));
 
             // 2. Crear usuario desde DTO
-            UserJPA user = userMapper.fromCreateDTO(createUserDto);
+            UserEntity user = userMapper.fromCreateDTO(createUserDto);
 
             // 3. Generar código de verificación
             Auth auth = new Auth();
@@ -52,7 +53,7 @@ public class CreateNewUserUseCase {
             user.getAuth().setVerificationExpiresAt(expirationTime);
 
             // 4. Guardar usuario
-            userRepository.save(user);
+            userRepository.save(userMapper.toDomain(user));
 
             // 5. Publicar evento en Kafka
             UserCreatedEvent event = new UserCreatedEvent(user.getId(), user.getEmail(), user.getAuth().getVerificationCode());
