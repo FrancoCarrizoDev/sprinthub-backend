@@ -1,7 +1,7 @@
 package com.sprinthub.sprinthub.projects.application.usecases;
 
 import com.sprinthub.sprinthub.users.domain.models.User;
-import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserMapper;
 import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import com.sprinthub.sprinthub.projects.application.mappers.ProjectMapper;

@@ -8,7 +8,7 @@ import com.sprinthub.sprinthub.auth.application.usecases.validators.UserValidati
 import com.sprinthub.sprinthub.shared.exceptions.ExceptionMessages;
 import com.sprinthub.sprinthub.auth.infraestructure.security.CustomJwtAuthenticationProvider;
 import com.sprinthub.sprinthub.users.domain.models.User;
-import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserMapper;
 import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 
@@ -22,15 +22,13 @@ public class CustomJwtAuthenticationUseCase {
     private final List<UserValidationRule> userValidationRules;
     private final List<CustomJwtAuthValidationRule> customJwtAuthValidationRules;
 
-    private final UserMapper userMapper;
 
 
-    public CustomJwtAuthenticationUseCase(UserRepository userRepository, CustomJwtAuthenticationProvider customJwtAuthenticationProvider, List<UserValidationRule> userValidationRules, List<CustomJwtAuthValidationRule> loginRequestValidationRules, UserMapper userMapper) {
+    public CustomJwtAuthenticationUseCase(UserRepository userRepository, CustomJwtAuthenticationProvider customJwtAuthenticationProvider, List<UserValidationRule> userValidationRules, List<CustomJwtAuthValidationRule> loginRequestValidationRules) {
         this.userRepository = userRepository;
         this.customJwtAuthenticationProvider = customJwtAuthenticationProvider;
         this.userValidationRules = userValidationRules;
         this.customJwtAuthValidationRules = loginRequestValidationRules;
-        this.userMapper = userMapper;
     }
 
 
@@ -39,20 +37,19 @@ public class CustomJwtAuthenticationUseCase {
                 () -> new InvalidCredentialsException(ExceptionMessages.EMAIL_NOT_PROVIDED)
         );
 
-        UserEntity userEntity = userMapper.toEntity(user);
-
         for (CustomJwtAuthValidationRule rule : customJwtAuthValidationRules) {
-            rule.validate(userEntity, request);
+            rule.validate(user, request);
         }
 
         for (UserValidationRule rule : userValidationRules) {
-            rule.validate(userEntity);
+            rule.validate(user);
         }
 
 
         return LoginRequestResponseDto.builder()
+                .id(user.getId())
                 .email(user.getEmail())
-                .externalId(userEntity.getAuth().getExternalId())
+                .externalId(user.getUserAuth().getExternalId())
                 .token(customJwtAuthenticationProvider.generateToken(user.getEmail()))
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

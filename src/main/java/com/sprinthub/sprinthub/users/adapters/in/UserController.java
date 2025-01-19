@@ -1,6 +1,8 @@
 package com.sprinthub.sprinthub.users.adapters.in;
 
+import com.sprinthub.sprinthub.shared.responses.ApiResponse;
 import com.sprinthub.sprinthub.users.application.dtos.CreateUserDto;
+import com.sprinthub.sprinthub.users.application.dtos.UserDto;
 import com.sprinthub.sprinthub.users.application.usecases.CreateNewUserUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +22,13 @@ public class UserController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> createUser(@RequestBody CreateUserDto user) {
+    public ResponseEntity<ApiResponse<UserDto>> createUser(@RequestBody CreateUserDto user) {
         try {
-            createNewUserUseCase.execute(user);
-            return ResponseEntity.ok("User created");
+            UserDto userResposne = createNewUserUseCase.execute(user);
+            ApiResponse<UserDto> response = new ApiResponse<>(true, userResposne, null);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error saving user");
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, null, e.getMessage()));
         }
 
     }

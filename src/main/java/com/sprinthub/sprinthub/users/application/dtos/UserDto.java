@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class UserDto {
     private UUID id;
     private String firstName;

@@ -6,8 +6,11 @@ import com.sprinthub.sprinthub.auth.domain.models.Auth;
 import com.sprinthub.sprinthub.auth.domain.services.PasswordHashes;
 import com.sprinthub.sprinthub.messaging.domain.models.UserCreatedEvent;
 import com.sprinthub.sprinthub.messaging.adapters.out.KafkaProducerAdapter;
+import com.sprinthub.sprinthub.shared.exceptions.ExceptionMessages;
 import com.sprinthub.sprinthub.users.application.dtos.CreateUserDto;
-import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.application.dtos.UserDto;
+import com.sprinthub.sprinthub.users.domain.models.User;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserMapper;
 import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import org.slf4j.Logger;
@@ -22,42 +25,33 @@ public class CreateNewUserUseCase {
     private final PasswordHashes passwordHasher;
     private final KafkaProducerAdapter kafkaProducerAdapter;
     private final Logger logger = LoggerFactory.getLogger(CreateNewUserUseCase.class);
-    private final ObjectMapper objectMapper;
+    private final Auth auth;
 
 
-    public CreateNewUserUseCase(UserRepository userRepository, UserMapper userMapper, PasswordHashes passwordHasher, KafkaProducerAdapter kafkaProducerAdapter, ObjectMapper objectMapper) {
+    public CreateNewUserUseCase(UserRepository userRepository, UserMapper userMapper, PasswordHashes passwordHasher, KafkaProducerAdapter kafkaProducerAdapter, Auth auth) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordHasher = passwordHasher;
         this.kafkaProducerAdapter = kafkaProducerAdapter;
-        this.objectMapper = objectMapper;
+        this.auth = auth;
     }
 
-    public void execute(CreateUserDto createUserDto) {
+
+    public UserDto execute(CreateUserDto createUserDto) {
         try {
             if (userRepository.existsByEmail(createUserDto.getEmail())) {
-                throw new IllegalArgumentException("Email already exists");
+                throw new IllegalArgumentException(ExceptionMessages.EMAIL_ALREADY_REGISTERED);
             }
 
-            // 1. Hash de contraseña
             createUserDto.setPassword(passwordHasher.hashPassword(createUserDto.getPassword()));
+            createUserDto.setVerificationCode(auth.generateVerificationCode());
+            createUserDto.setVerificationExpiresAt(auth.calculateExpirationTime());
 
-            // 2. Crear usuario desde DTO
-            UserEntity user = userMapper.fromCreateDTO(createUserDto);
+            User userSaved = userRepository.save(userMapper.toDomain(createUserDto));
+            UserCreatedEvent event = new UserCreatedEvent(userSaved.getId(), userSaved.getEmail(), userSaved.getUserAuth().getVerificationCode());
+            kafkaProducerAdapter.send("user.created", event.getUserId().toString(), event);
 
-            // 3. Generar código de verificación
-            Auth auth = new Auth();
-            String verificationCode = auth.generateVerificationCode();
-            LocalDateTime expirationTime = auth.calculateExpirationTime();
-            user.getAuth().setVerificationCode(verificationCode);
-            user.getAuth().setVerificationExpiresAt(expirationTime);
-
-            // 4. Guardar usuario
-            userRepository.save(userMapper.toDomain(user));
-
-            // 5. Publicar evento en Kafka
-            UserCreatedEvent event = new UserCreatedEvent(user.getId(), user.getEmail(), user.getAuth().getVerificationCode());
-            kafkaProducerAdapter.send("user.created", event.getUserId().toString(), serializeEvent(event));
+            return userMapper.toDto(userSaved);
         } catch (Exception e) {
             logger.error("Error saving user", e);
             throw new RuntimeException("Error saving user");
@@ -65,11 +59,5 @@ public class CreateNewUserUseCase {
     }
 
 
-    private String serializeEvent(UserCreatedEvent event) {
-        try {
-            return objectMapper.writeValueAsString(event); // Usa el ObjectMapper inyectado
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("Error serializing event", e);
-        }
-    }
+
 }

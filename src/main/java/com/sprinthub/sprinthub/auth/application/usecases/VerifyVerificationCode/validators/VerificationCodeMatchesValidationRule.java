@@ -9,7 +9,7 @@ public class VerificationCodeMatchesValidationRule implements VerificationCodeVa
 
     @Override
     public void validate(UserEntity user, VerificationCodeRequestDto request) {
-        if (!user.getAuth().getVerificationCode().equals(request.getVerificationCode())) {
+        if (!user.getUserAuth().getVerificationCode().equals(request.getVerificationCode())) {
             throw new InvalidVerificationCodeException(ExceptionMessages.INVALID_VERIFICATION_CODE);
         }
     }

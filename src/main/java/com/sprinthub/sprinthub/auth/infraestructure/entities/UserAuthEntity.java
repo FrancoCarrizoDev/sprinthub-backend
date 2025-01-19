@@ -1,26 +1,29 @@
-package com.sprinthub.sprinthub.auth.domain.models;
+package com.sprinthub.sprinthub.auth.infraestructure.entities;
 
 import com.sprinthub.sprinthub.auth.application.dtos.AuthProviderEnum;
 import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
-@Table(name = "user_auth")
 @Getter
 @Setter
-public class UserAuthJPA {
+@NoArgsConstructor
+@Table(name = "user_auth")
+@Entity
+public class UserAuthEntity {
 
     @Id
     @GeneratedValue
     private UUID id;
 
-    @OneToOne(optional = false) // Cambiado de ManyToOne a OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true) // unique=true garantiza unicidad en la base de datos
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private UserEntity user;
 
     @Column(name = "auth_provider", nullable = false)
@@ -45,13 +48,11 @@ public class UserAuthJPA {
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = true, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt = LocalDateTime.now();
-
-    // Getters and setters
 
     @PreUpdate
     public void preUpdate() {

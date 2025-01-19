@@ -4,7 +4,7 @@ import com.sprinthub.sprinthub.auth.application.dtos.VerificationCodeRequestDto;
 import com.sprinthub.sprinthub.auth.application.usecases.VerifyVerificationCode.validators.VerificationCodeValidationRule;
 import com.sprinthub.sprinthub.shared.exceptions.ExceptionMessages;
 import com.sprinthub.sprinthub.users.domain.models.User;
-import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserMapper;
 import com.sprinthub.sprinthub.users.infraestructure.entities.UserEntity;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 
@@ -33,7 +33,7 @@ public class VerificationCodeUseCase {
 
         verificationCodeValidationRules.forEach(rule -> rule.validate(userEntity, request));
 
-        userEntity.getAuth().setVerified(true);
+        userEntity.getUserAuth().setVerified(true);
 
         user = userMapper.toDomain(userEntity);
 

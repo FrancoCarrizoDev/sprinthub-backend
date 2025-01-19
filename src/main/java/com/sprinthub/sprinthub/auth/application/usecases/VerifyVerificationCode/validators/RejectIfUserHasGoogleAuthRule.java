@@ -10,7 +10,7 @@ public class RejectIfUserHasGoogleAuthRule implements VerificationCodeValidation
 
         @Override
         public void validate(UserEntity user, VerificationCodeRequestDto request) {
-            if (user.getAuth().getAuthProvider() != AuthProviderEnum.CREDENTIALS) {
+            if (user.getUserAuth().getAuthProvider() != AuthProviderEnum.CREDENTIALS) {
                 throw new UserRegisteredWithGoogleException(ExceptionMessages.USER_REGISTERED_WITH_GOOGLE);
             }
         }

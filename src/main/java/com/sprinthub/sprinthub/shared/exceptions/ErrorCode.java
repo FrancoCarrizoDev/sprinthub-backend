@@ -22,12 +22,4 @@ public enum ErrorCode {
         return code;
     }
 
-    public static ErrorCode getCodeFromValue(String value){
-        for(ErrorCode e : ErrorCode.values()){
-            if(e.getCode().equals(value)){
-                return e;
-            }
-        }
-        return null;
-    }
 }

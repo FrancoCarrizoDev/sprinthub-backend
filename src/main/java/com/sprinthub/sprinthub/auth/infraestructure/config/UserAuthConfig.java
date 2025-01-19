@@ -13,7 +13,7 @@ import com.sprinthub.sprinthub.auth.application.usecases.VerifyVerificationCode.
 import com.sprinthub.sprinthub.auth.application.usecases.VerifyVerificationCode.validators.VerificationCodeValidationRule;
 import com.sprinthub.sprinthub.auth.application.usecases.validators.*;
 import com.sprinthub.sprinthub.auth.infraestructure.security.CustomJwtAuthenticationProvider;
-import com.sprinthub.sprinthub.users.domain.models.UserMapper;
+import com.sprinthub.sprinthub.users.infraestructure.entities.UserMapper;
 import com.sprinthub.sprinthub.users.domain.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -109,15 +109,13 @@ public class UserAuthConfig {
             UserRepository userRepository,
             CustomJwtAuthenticationProvider customJwtAuthenticationProvider,
             List<UserValidationRule> userValidationRules,
-            List<CustomJwtAuthValidationRule> loginRequestValidationRules,
-            UserMapper userMapper
+            List<CustomJwtAuthValidationRule> loginRequestValidationRules
     ) {
         return new CustomJwtAuthenticationUseCase(
                 userRepository,
                 customJwtAuthenticationProvider,
                 userValidationRules,
-                loginRequestValidationRules,
-                userMapper
+                loginRequestValidationRules
         );
     }
 

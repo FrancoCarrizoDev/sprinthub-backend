@@ -8,7 +8,7 @@ package com.sprinthub.sprinthub.users.infraestructure.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import com.sprinthub.sprinthub.auth.domain.models.UserAuthJPA;
+import com.sprinthub.sprinthub.auth.infraestructure.entities.UserAuthEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,7 +24,7 @@ public class UserEntity {
     private UUID id;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private UserAuthJPA auth;
+    private UserAuthEntity userAuth;
 
     @Column(unique = true, nullable = false)
     private String email;

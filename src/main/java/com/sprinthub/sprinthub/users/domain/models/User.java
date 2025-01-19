@@ -1,5 +1,7 @@
 package com.sprinthub.sprinthub.users.domain.models;
 
+import com.sprinthub.sprinthub.auth.domain.models.UserAuth;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,19 +11,30 @@ public class User {
     private String email;
     private String firstName;
     private String lastName;
-    private boolean active;
+    private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public UserAuth getUserAuth() {
+        return userAuth;
+    }
 
-    public User(UUID id, String email, String firstName, String lastName, boolean active, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public void setUserAuth(UserAuth userAuth) {
+        this.userAuth = userAuth;
+    }
+
+    private UserAuth userAuth;
+
+
+    public User(UUID id, String email, String firstName, String lastName, boolean active, LocalDateTime createdAt, LocalDateTime updatedAt, UserAuth auth) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.active = active;
+        this.isActive = active;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.userAuth = auth;
     }
 
     public User() {
@@ -60,11 +73,11 @@ public class User {
     }
 
     public boolean isActive() {
-        return active;
+        return isActive;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        this.isActive = active;
     }
 
     public LocalDateTime getCreatedAt() {

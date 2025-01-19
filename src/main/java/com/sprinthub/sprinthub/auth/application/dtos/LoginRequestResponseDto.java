@@ -5,11 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
 public class LoginRequestResponseDto {
+    private UUID id;
     private String firstName;
     private String lastName;
     private String email;

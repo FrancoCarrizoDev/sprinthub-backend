@@ -9,6 +9,8 @@ public class ExceptionMessages {
 
     public static final String USER_NOT_FOUND = "Usuario no encontrado.";
 
+    public static final String EMAIL_ALREADY_REGISTERED = "El correo electrónico ya está registrado.";
+
     public static final String USER_REGISTERED_WITH_GOOGLE = "El usuario está registrado con Google.";
 
     public static final String INVALID_VERIFICATION_CODE = "Código de verificación inválido.";
