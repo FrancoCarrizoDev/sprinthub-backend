@@ -79,8 +79,8 @@ public class UserMapper {
         userAuth.setLastLogin(null);
         userAuth.setPasswordHash(dto.getPassword());
         userAuth.setCreatedAt(LocalDateTime.now());
-        userAuth.setVerificationCode(dto.getVerificationCode());
-        userAuth.setVerificationExpiresAt(dto.getVerificationExpiresAt());
+        userAuth.setVerificationCode(null);
+        userAuth.setVerificationExpiresAt(null);
         domain.setUserAuth(userAuth);
 
         return domain;
@@ -90,6 +90,7 @@ public class UserMapper {
     public User fromOAuthUserDTO(OAuthUserDto userDto) {
         User user = new User();
         user.setEmail(userDto.getEmail());
+        user.setActive(true);
         user.setFirstName(userDto.getFirstName());
         user.setLastName(null);
         UserAuth userAuth = new UserAuth();

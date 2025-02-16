@@ -12,6 +12,4 @@ public class CreateUserDto {
     private String password;
     private String firstName;
     private String lastName;
-    private String verificationCode;
-    private LocalDateTime verificationExpiresAt;
 }
